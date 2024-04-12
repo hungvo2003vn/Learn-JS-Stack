@@ -52,4 +52,45 @@ export class UserService {
         return user
     }
 
+    //updateById
+    async updateById({
+        user_id,
+        firstName,
+        lastName
+    }): Promise<User>{
+
+        let updates: Partial<User> = {}
+        if (firstName) { updates.firstName = firstName}
+        if (lastName) { updates.lastName = lastName}
+
+        const user = await this.userModel.findByIdAndUpdate(
+            user_id,
+            updates,
+            { new: true }
+        )
+
+        if(!user) {
+            return Promise.reject({
+                status: 404,
+                message: `User with id=${user_id} not found!`
+            })
+        }
+
+        return user
+    }
+
+    //DeleteById
+    async deleteById(user_id: string): Promise<String> {
+
+        const user  = await this.userModel.findByIdAndDelete(user_id)
+
+        if(!user) {
+            return Promise.reject({
+                status: 404,
+                message: `User with id=${user_id} not found!`
+            })
+        }
+
+        return  `User with id=${user_id} deleted successfully!`
+    }
 }
